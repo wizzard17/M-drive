@@ -17,6 +17,7 @@ function setup() {
 function draw() {
   background(220);
   cornersAndMouseLoop();
+  Trianglemouse()
 }
 
 function mousePressed(){
@@ -73,4 +74,13 @@ function initWithLoops(){
     yPos.push(y);
   }
 }
-function 
+function Trianglemouse(){
+  while(i < xPos.length){
+    let x = xPos[i];
+    let y = yPos[i];
+    let x2 = xPos[i+1];
+    let y2 = yPos[i+1];
+    triangle(x,y,x2,y2,mouseX,mouseY);
+    i++; 
+  }
+}
