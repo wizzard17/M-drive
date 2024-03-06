@@ -18,8 +18,10 @@ function draw() {
   }
   if(mouseIsPressed){
     update=true
-    if(squaresize<width && squaresize<height)
-    squaresize+=1
+    if(squaresize<width && squaresize<height){
+      squaresize+=5
+    }
+    
 
   }
   
