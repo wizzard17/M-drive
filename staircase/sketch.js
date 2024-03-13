@@ -10,6 +10,8 @@ let totheleft=0
 let randomenumber
 let flagY
 let flagx
+let wide = .1
+let multiply=10
 
 
 function setup() {
@@ -20,23 +22,27 @@ function draw() {
 
 background(220)
 y=height
-
-staircase(.1,500);
+staircase(wide,500,"black");
 drawFlag(flagx,flagY)
-totheleft+=1
-x-=totheleft
-
+if(keyIsPressed&&wide<width/2){
+  wide+=10
+}
+if(mouseIsPressed&&wide>1){
+  wide=wide-10
+}
   
   
 }
-function staircase(w,maxheight){
+function staircase(w,maxheight,filling){
   let flagheight=0// resets flag max height so it can find the new spot
   //loop to print the terain
-  for (let time = 0; x < width; time+=.005){
+  for (let time = totheleft; x < width; time+=.005){
+    
     if(x>0){
       //makes the rectangle and height using noise
       randomenumber=noise(time)
       h=map(randomenumber,0,1,1,maxheight)
+      stroke(filling)
       rect(x,y-h,w,h)
       //keeps track of the heighst point
       if (h>flagheight){
@@ -50,6 +56,8 @@ function staircase(w,maxheight){
     x+=w
   }
   x=0
+  totheleft+=.05
+  
 }
 //prints a flag 
 function drawFlag(x,y){
