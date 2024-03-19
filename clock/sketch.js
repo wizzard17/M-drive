@@ -18,15 +18,21 @@ function draw() {
 function cloak(){
   rectMode(CENTER)
   fill("white")
-  circle(width/2,height/2,400)
-  for(let i = 0;i<360;){
-    
-    
+  translate(width/2,height/2)
+  circle(0,0,400)
+  for(let e = 0 ; e<=360;){ 
   
+  angleMode(DEGREES)
   
-  rotate(degrees(i));
   fill("black");
-  rect(width/2,height/2,10,100);
-  i+=6
+  rectMode(CENTER)
+  if (e%(7.5*6)===0){
+    rect(0,175,5,25);
+  }
+  else{
+    rect(0,175,.5,25);
+  }
+  rotate(7.5);
+  e+=7.5
   }
 }
