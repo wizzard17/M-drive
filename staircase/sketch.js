@@ -78,3 +78,4 @@ function drawFlag(x,y){
   fill("red");
   triangle(x,y,x,y-5,x+5,y-(5/2));
 }
+
