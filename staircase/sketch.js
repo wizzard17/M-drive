@@ -1,18 +1,16 @@
-// Project Title
+// generated terrain
 // Rurik
-// Date
+// Date 3/22/2024
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// -i did all the change parts
 let x=0;
 let y;
 let totheleft=0;
-let randomenumber;
 let flagY;
 let flagx;
 let wide = 1;
-let multiply=10;
-let totalaverage;
+let totalaverage;//keeps track of total amount 
 let average;
 let amoutmade=0;
 function setup() {
@@ -22,8 +20,10 @@ function draw() {
 
 background(220);
 y=height;
-staircase(wide,height/2,"black");
+staircase(wide,height,"black");
+
 drawFlag(flagx,flagY);
+//widens and shrinks the rectangles
 if(keyIsPressed&& keyCode===LEFT_ARROW&&wide<width/2){
   wide+=.1;
 }
@@ -34,23 +34,24 @@ if(keyIsPressed&& keyCode===RIGHT_ARROW&&wide>1){
 function staircase(w,maxheight,filling){
   let flagheight=0;// resets flag max height so it can find the new spot
   //loop to print the terain
-  
+  //resets the to 0
   totalaverage=0;
   amoutmade=0;
-  
+  //makes the recangles to the end
   for (let time = totheleft; x < width; time+=.05){
     
     
     
     //makes the rectangle and height using noise
-    randomenumber=noise(time);
+    let randomenumber=noise(time);
     h=map(randomenumber,0,1,1,maxheight);
     fill("grey");
     rectMode(CORNER);
     rect(x,y-h,w,h);
-    //keeps track of the heighst point
-    totalaverage+=h;
-    amoutmade+=1;
+    //used to find the average
+    totalaverage+=h;//total height added
+    amoutmade+=1;//number of rectangles
+    //gets the highest rectangle
     if (h>flagheight){
       flagheight=h;
       flagY=height-h;
@@ -78,4 +79,3 @@ function drawFlag(x,y){
   fill("red");
   triangle(x,y,x,y-5,x+5,y-(5/2));
 }
-
