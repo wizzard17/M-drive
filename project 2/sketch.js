@@ -1,6 +1,6 @@
-// Project Title
-// Your Name
-// Date
+// Nested loops project
+// Rurik Lung
+// Date 3/22/2024
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -17,6 +17,14 @@ function draw() {
     grid()
   }
   if(mouseIsPressed){
+    update=true
+    if(squaresize<width && squaresize<height){
+      squaresize+=5
+    }
+    
+
+  }
+  if(keyIsPressed&&keyIsDown("a")){
     update=true
     if(squaresize<width && squaresize<height){
       squaresize+=5
