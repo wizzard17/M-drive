@@ -4,52 +4,46 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-let squaresize=20
-let update= true
+let squaresize=20;
+let update= true;//checks for updates
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  
+  //allows first update
   if (update===true){
     background(220);
-    grid()
+    grid();
   }
-  if(mouseIsPressed){
-    update=true
-    if(squaresize<width && squaresize<height){
-      squaresize+=5
+  //Grows when left key
+  if(keyIsPressed&&keyCode===LEFT_ARROW){
+    update=true;
+    if(squaresize<width/2 && squaresize<height/2){
+      squaresize+=5;
     }
     
 
   }
-  if(keyIsPressed&&keyIsDown("a")){
-    update=true
-    if(squaresize<width && squaresize<height){
-      squaresize+=5
+  //shrinks when right key pressed and allows update
+  if(keyIsPressed&&keyCode===RIGHT_ARROW){
+    update=true;
+    if(squaresize>=20){
+      squaresize-=5;
     }
-    
-
   }
-  
 }
 function grid(){
-  update=false
-  let x
-  let y
-  let fillnumber=60
-  let fillnumber2=0
-  let fillnumber3=0
-  
+  update=false;
+  let x;
+  let y;
+  //makes grid
   for(x = 0; x < width-squaresize; x+=squaresize){
     for(y = 0; y < height-squaresize; y+=squaresize){
-      fillnumber+=1
-      fillnumber2+=1
-      fillnumber3+=1
+      //picks randome color
       let c = random(['red', 'yellow', 'blue', 'green']);
-      fill(c)
-      square(x,y,squaresize)
+      fill(c);
+      square(x,y,squaresize);
       
     }
   }
