@@ -8,10 +8,15 @@ let cars = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  colorMode(HSB)
+  for(let i=0;i<20;i++){ 
+    cars.push(new Car(5,"white"));
+  }
 }
 function mouseClicked(){
   //trigger on a full press/release mouse interaction
-  cars.push(new Car(5));
+  cars.push(new Car(5,random(360)));
+ 
 }
 
 function draw() {
@@ -20,18 +25,20 @@ function draw() {
     
     p.move();
     p.display();
+    p.speedDown()
+    p.speedUp()
   }
 }
 
 class Car{
-  constructor(speed){
-    this.x=(width/2);
+  constructor(speed,color){
+    this.x=(random(width));
     this.y=random(height);
     this.speed=speed;
     this.cartype=round(random(1),0)
+    this.color=color;
   }
   move(){
-    console.log(this.cartype)
     if(this.x<0-20){
       this.x=width+20
     }
@@ -50,6 +57,7 @@ class Car{
 
   }
   display(){
+    fill(this.color)
     rectMode(CENTER)
     if(this.cartype===1){
       rect(this.x,this.y,30,50)
@@ -57,6 +65,22 @@ class Car{
     else{
       circle(this.x,this.y,50)
 
+    }
+  }
+  speedUp(){
+    let chance =round(random(100))
+    if (chance===1){
+      if (this.speed<10){
+        this.speed+=5
+      }
+    }
+  }
+  speedDown(){
+    let chance =round(random(100))
+    if (chance===2){
+      if (this.speed>0){
+        this.speed-=5
+      }
     }
   }
 }
