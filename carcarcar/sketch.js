@@ -1,5 +1,5 @@
 // Cars Cars Cars
-// Your Name
+// Rurik 
 // Date
 //
 // Extra for Experts:
@@ -41,9 +41,9 @@ function devider(){
   }
 }
 class Car{
-  constructor(speed,color){
+  constructor(y,speed,color){
     this.x=(random(width));
-    this.y=random(height-40);
+    this.y=y;
     this.speed=speed;
     this.cartype=round(random(1),0)
     this.color=color;
@@ -89,5 +89,14 @@ class Car{
         this.speed-=5
       }
     }
+  }
+}
+class Trafficlight{
+  constructor(){
+
+  } 
+  redlight(){
+    let savedspeed = this.speed
+    this.speed = 0
   }
 }
