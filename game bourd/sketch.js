@@ -5,9 +5,10 @@ let NUM_COLS = 5;
 let rectWidth, rectHeight;
 let currentRow, currentCol;
 let gridData = [[255,255,255,255,255],
+                [0,255,0,255,255],
                 [255,255,255,255,255],
-                [255,255,255,255,255],
-                [255,255,255,255,255]];
+                [0,255,0,255,0]];
+let win= false
 
 
 
@@ -22,7 +23,11 @@ function draw() {
   background(220);
   determineActiveSquare();   //figure out which tile the mouse cursor is over
   drawGrid();       
-  console.log(wincheck())         //render the current game board to the screen (and the overlay)
+  win=wincheck()        //render the current game board to the screen (and the overlay)
+  if(win===true){
+    background(220);
+    text(" WIN", 50, 50);
+  }
 }
 
 
