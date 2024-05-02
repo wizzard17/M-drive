@@ -4,40 +4,45 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-let cars = [];
-
+let carseast = [];
+let carswest = [];
+let roadwide
+let colorwheel=["yellow","blue","green","red","lightblue"]
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  colorMode(HSB)
+ roadwide = height-300
+  
   for(let i=0;i<20;i++){ 
-    cars.push(new Car(10,"white"));
+    carswest.push(new Car(random(roadwide),10,random(colorwheel)));
   }
 }
+
 function mouseClicked(){
   //trigger on a full press/release mouse interaction
-  cars.push(new Car(10,random(360)));
+  carswest.push(new Car(random(roadwide/2,roadwide),10,random(colorwheel)));
  
 }
 
 function draw() {
   background("Black");
+  
   devider()
-  for(let p of cars){ 
+  for(let p of carswest){ 
     
     p.move();
     p.display();
     p.speedDown()
     p.speedUp()
+    p.changecolor()
   }
 }
 
 function devider(){
   for(let x=0; x<width;x+=80){
     fill("yellow");
-    rect(x,height/2,40,10);
+    rect(x,(roadwide)/2,40,10);
     
     x+=40
-    console.log(1)
   }
 }
 class Car{
@@ -55,7 +60,7 @@ class Car{
     if(this.x>width+20){
       this.x=0-20
     }
-    if(this.y>height/2){
+    if(this.y>roadwide/2){
       this.x+=this.speed
     }
     else{
@@ -64,12 +69,14 @@ class Car{
 
   }
   display(){
-    fill(this.color)
+    
     rectMode(CENTER)
     if(this.cartype===1){
+      fill(this.color)
       rect(this.x,this.y,30,50)
     }
     else{
+      fill(this.color)
       circle(this.x,this.y,50)
 
     }
@@ -90,6 +97,11 @@ class Car{
       }
     }
   }
+  changecolor(){
+    if(round(random(100),0)===1){
+    this.color=random(colorwheel)
+    }
+  }
 }
 class Trafficlight{
   constructor(){
@@ -98,5 +110,9 @@ class Trafficlight{
   redlight(){
     let savedspeed = this.speed
     this.speed = 0
+  }
+  display(){
+    fill("grey")
+    rect(length/2,height,100,200)
   }
 }
