@@ -12,14 +12,21 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
  roadwide = height-300
   
-  for(let i=0;i<20;i++){ 
-    carswest.push(new Car(random(roadwide),10,random(colorwheel)));
+  for(let i=0;i<10;i++){ 
+    carswest.push(new Car(random(roadwide/2+40,roadwide-20),10,random(colorwheel)));
+    carseast.push(new Car(random(roadwide/2-40),10,random(colorwheel)));
   }
 }
 
 function mouseClicked(){
   //trigger on a full press/release mouse interaction
-  carswest.push(new Car(random(roadwide/2,roadwide),10,random(colorwheel)));
+  if (keyIsPressed && key === 'Shift') {
+    carseast.push(new Car(random(roadwide/2-40),10,random(colorwheel)));
+    console.log("left")
+  }
+  else{
+    carswest.push(new Car(random(roadwide/2+40,roadwide-20),10,random(colorwheel)));
+  }
  
 }
 
@@ -30,7 +37,15 @@ function draw() {
   for(let p of carswest){ 
     
     p.move();
-    p.display();
+    p.display(50,30);
+    p.speedDown()
+    p.speedUp()
+    p.changecolor()
+  }
+  for(let p of carseast){ 
+    
+    p.move();
+    p.display(50,30);
     p.speedDown()
     p.speedUp()
     p.changecolor()
@@ -68,12 +83,23 @@ class Car{
     }
 
   }
-  display(){
+  display(w,h){
     
     rectMode(CENTER)
     if(this.cartype===1){
-      fill(this.color)
-      rect(this.x,this.y,30,50)
+      
+      rect(this.x, this.y, w, h);
+      fill(this.color);
+      rect(this.x, this.y, w, h);
+    
+      // Car roof
+      fill("blue");
+      rect(this.x + w * 0.1, this.y - h * 0.25, w * 0.8, h * 0.5);
+    
+      // Wheels
+      fill(100);
+      ellipse(this.x - w * 0.25, this.y + h * 0.75, w * 0.25, w * 0.25);
+      ellipse(this.x + w * 0.50, this.y + h * 0.75, w * 0.25, w * 0.25);
     }
     else{
       fill(this.color)
@@ -105,11 +131,18 @@ class Car{
 }
 class Trafficlight{
   constructor(){
+    this.speed
+    
 
   } 
-  redlight(){
+  redlight(list1,list2){
     let savedspeed = this.speed
     this.speed = 0
+    fo
+
+
+
+
   }
   display(){
     fill("grey")
