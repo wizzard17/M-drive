@@ -1,0 +1,33 @@
+import random
+
+original_bal = 10000
+balance = original_bal
+gamble_amount = 0.01
+
+losestreak=0
+
+while balance > 0 and balance < original_bal * 2:
+    if gamble_amount > balance:
+        break
+    if losestreak>1000000:
+        gamble_amount = 0.01
+        losestreak=0
+    gamble_amount = min(balance, gamble_amount)
+    balance -= gamble_amount
+    random_number = random.uniform(0, 100)  # Use uniform for float random numbers
+    if random_number > 50.5:
+        balance += gamble_amount * 2
+        gamble_amount = 0.01  # Reset gamble amount after a loss
+        losestreak=0
+        
+    else:
+        gamble_amount *= 2
+        losestreak+=1
+        
+    print("balance: " + str(round(balance,2)))
+
+if balance >= original_bal * 2:
+    print("doubled")
+else:
+    print("lose all money")
+print(balance)
