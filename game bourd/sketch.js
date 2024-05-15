@@ -1,13 +1,13 @@
 //Insert your Comment Header here.
-
+let square = true
 let NUM_ROWS = 4;
 let NUM_COLS = 5;
 let rectWidth, rectHeight;
 let currentRow, currentCol;
-let gridData = [[255,255,255,255,255],
-                [0,255,0,255,255],
-                [255,255,255,255,255],
-                [0,255,0,255,0]];
+let gridData = [[0,0,0,0,0],
+                [0,0,0,0,255],
+                [0,0,0,255,0],
+                [0,0,0,0,0]];
 let win= false
 
 
@@ -21,24 +21,39 @@ function setup() {
 
 function draw() {
   background(220);
+  drawGrid();
   determineActiveSquare();   //figure out which tile the mouse cursor is over
-  drawGrid();       
+         
   win=wincheck()        //render the current game board to the screen (and the overlay)
   if(win===true){
     background(220);
     text(" WIN", 50, 50);
   }
+  selectedsquare()
 }
 
 
 
 function mousePressed(){
   // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
+  if(keyIsDown(SHIFT)){
+    flip(currentCol, currentRow);
+  }
+  else if(square===false){
+
   
   flip(currentCol-1, currentRow);
   flip(currentCol+1, currentRow);
   flip(currentCol, currentRow-1);
   flip(currentCol, currentRow+1);
+  flip(currentCol, currentRow);
+  }
+  else{
+    flip(currentCol+1, currentRow);
+    flip(currentCol, currentRow-1);
+    flip(currentCol+1, currentRow-1);
+    flip(currentCol, currentRow);
+  }
 }
 
 function flip(col, row){
@@ -57,7 +72,9 @@ function flip(col, row){
 function determineActiveSquare(){
   // An expression to run each frame to determine where the mouse currently is.
   currentRow = int(mouseY / rectHeight);
+ 
   currentCol = int(mouseX / rectWidth);
+  
 }
 
 function drawGrid(){
@@ -73,13 +90,23 @@ function wincheck(){
   let colorofbox1 =gridData[0][0]
   let colorofbox
    for(let i=0; i<gridData.length; i++){
-    for(let j=0; j<gridData.length; j++){
+    for(let j=0; j<gridData[0].length; j++){
       colorofbox =gridData[i][j]
-      if(colorofbox != colorofbox1){
+      if(colorofbox !== colorofbox1){
         return false
       }
     }
    }
    return true
 }
-
+function selectedsquare(){
+  for (let x = 0; x < NUM_COLS ; x++){
+    for (let y = 0; y < NUM_ROWS; y++){
+      if(y===currentRow+1 &&x === currentCol||y===currentRow-1 &&x === currentCol||y===currentRow &&x === currentCol+1 || y===currentRow && x === currentCol-1){
+        fill(150,200,50,70); 
+        rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+      }
+      
+    }
+  }
+}

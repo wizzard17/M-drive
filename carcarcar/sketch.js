@@ -132,9 +132,17 @@ class Car {
       ellipse(this.x + w * 0.50, this.y + h * 0.75, w * 0.25, w * 0.25);
     }
     else {
-      fill(this.color);
-      circle(this.x, this.y, 50);
+      fill(255, 0, 0);
+      rect(this.x, this.y - 20, w, h);
 
+      // Cabin
+      fill("blue");
+      rect(this.x + w - 50, this.y -20, 50, 20);
+
+      // Wheels
+      fill("grey");
+      ellipse(this.x + 20, this.y + 10, 30, 30);
+      ellipse(this.x + w - 80, this.y + 10, 30, 30);
     }
   }
   speedUp() {
