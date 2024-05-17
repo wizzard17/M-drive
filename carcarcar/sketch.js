@@ -6,7 +6,7 @@ let carseast = [];
 let carswest = [];
 
 let roadwide; //for road size
-let colorwheel = ["yellow", "blue", "green", "red", "lightblue"];
+let colorwheel = ["yellow", "blue", "green", "red", "lightblue"]; //color for car collection
 let traficlight;//traffic light class veriable
 let timer = 0;//timer for red light
 
@@ -20,7 +20,7 @@ function setup() {
     carswest.push(new Car(random(roadwide / 2 + 40, roadwide - 20), 10, random(colorwheel)));
     carseast.push(new Car(random(roadwide / 2 - 40), 10, random(colorwheel)));
   }
-
+  //makes traffic light
   traficlight = new Trafficlight();
 }
 
@@ -56,7 +56,7 @@ function draw() {
       timer = 0;
     }
   }
-  //movement for the cars
+  //movement for the cars and display and randome chance functions
   for (let p of carswest) {
     p.move();
     p.display(50, 30);
@@ -74,7 +74,7 @@ function draw() {
   traficlight.display();
 }
 
-function devider() {
+function devider() { //function to devide road line
   for (let x = 0; x < width; x += 80) {
     fill("yellow");
     rect(x, (roadwide) / 2, 40, 10);
@@ -91,6 +91,7 @@ class Car {
     this.color = color;
     this.savedspeed;
   }
+  //stop and go are use for the traffic light
   stop() {
     this.savedspeed = this.speed;
     this.speed = 0;
@@ -98,7 +99,8 @@ class Car {
   go() {
     this.speed = this.savedspeed;
   }
-  move() {
+
+  move() {// checks if the ar is top half ot bottom half and make it move left or right
     if (this.x < 0 - 20) {
       this.x = width + 20;
     }
@@ -114,7 +116,7 @@ class Car {
 
   }
   display(w, h) {
-
+    //displays depending on the typ of car and h w for size of the car
     rectMode(CENTER);
     if (this.cartype === 1) {
 
@@ -137,7 +139,7 @@ class Car {
 
       // Cabin
       fill("blue");
-      rect(this.x + w - 50, this.y -20, 50, 20);
+      rect(this.x + w - 50, this.y - 20, 50, 20);
 
       // Wheels
       fill("grey");
@@ -145,7 +147,9 @@ class Car {
       ellipse(this.x + w - 80, this.y + 10, 30, 30);
     }
   }
+  //functions for random change in speed and colors
   speedUp() {
+
     let chance = round(random(100));
     if (chance === 1) {
       if (this.speed < 15) {
@@ -174,6 +178,7 @@ class Trafficlight {
     this.lightcolor = "green"
   }
   redlight() {
+    //loops throght all the cars and stops them and make light red 
     this.lightred = true;
     this.lightcolor = "red"
     for (let p of carswest) {
@@ -184,6 +189,7 @@ class Trafficlight {
     }
   }
   greenlight() {
+    //lets all the cars move changes light to green
     this.lightcolor = "green"
     for (let p of carswest) {
       p.go();
@@ -193,6 +199,7 @@ class Trafficlight {
     }
   }
   display() {
+    //displays light
     fill("grey");
     rectMode(CENTER)
     rect(width / 2, height * 5 / 6, 500, 200);
