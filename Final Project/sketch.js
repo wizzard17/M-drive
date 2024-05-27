@@ -1,56 +1,98 @@
-// Puzzle fighter
-// Rurik Lung
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-let list =[
-[0,0,0,0,0,0],//13
-[0,0,0,0,0,0],//12
-[0,0,0,0,0,0],//11
-[0,0,0,0,0,0],//10
-[0,0,0,0,0,0],//9
-[0,0,0,0,0,0],//8
-[0,0,0,0,0,0],//7
-[0,0,0,0,0,0],//6
-[0,0,0,0,0,0],//5
-[0,0,0,0,0,0],//3
-[0,0,0,0,0,0],//3
-[0,0,0,0,0,0],//2
-[0,0,0,0,0,0]//1
-]
-let images = {};
-let imageNames = ['white','red', 'green', 'yellow', 'blue'];
 
+
+let images = [];
+let imageNames = ['white', 'red', 'green', 'yellow', 'blue'];
+let player1 
 function preload() {
-  // Load each image and store it in the images object
+  // Load each image and store it in the images array
   for (let i = 0; i < imageNames.length; i++) {
-    images[imageNames[i]] = loadImage('assets/' + imageNames[i] + '.png');
+    images[i] = loadImage('assets/' + imageNames[i] + '.png');
   }
 }
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  player1 =new DrawGrid(50, 50);
+
 }
 
 function draw() {
   background(220);
-  drawGrid(list,50,50,width/2,0)
-  
+  player1.drawGrid()
 }
-function drawGrid(gridData,rectWidth,rectHeight,GridX,GridY) {
-  // Render a grid of squares - fill color set according to data stored in the 2D array
-  push()
-  translate(GridX,GridY)
-  let NUM_ROWS = gridData.length
-  let  NUM_COLS= gridData[0].length
-  for (let x = 0; x < NUM_COLS; x++) {
-    for (let y = 0; y < NUM_ROWS; y++) {
-      
-      
-      image(images[gridData[y][x]], x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-      
-      
+
+class DrawGrid {
+  constructor(rectWidth, rectHeight, gridX, gridY) {
+    this.gridData = [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0]
+    ];
+    this.rectWidth = rectWidth;
+    this.rectHeight = rectHeight;
+    this.gridX = width / 2 - (this.gridData[0].length * 25);
+    this.gridY = height / 2 - (this.gridData.length * 25);
+  }
+
+  drawGrid() {
+    push();
+    translate(this.gridX, this.gridY);
+    let numRows = this.gridData.length;
+    let numCols = this.gridData[0].length;
+    
+    for (let y = 0; y < numRows; y++) {
+      for (let x = 0; x < numCols; x++) {
+        let imgIndex = this.gridData[y][x];
+        
+        // Check if the image index is within bounds of the images array
+        if (imgIndex >= 0 && imgIndex < images.length) {
+          image(images[imgIndex], x * this.rectWidth, y * this.rectHeight, this.rectWidth, this.rectHeight);
+        } else {
+          console.error(`Image index ${imgIndex} out of bounds at grid position (${y}, ${x})`);
+        }
+      }
+    }
+    
+    pop();
+  }
+
+  
+
+
+
+
+}
+class Drop{
+  constructor(block1x,block1y,block2x,block2y,gridData,block1type,block2type){
+    this.block1x=block1x;
+    this.block2x=block2x;
+    this.block1y=block1y;
+    this.block2y=block2y;
+    this.gridData=gridData;
+    this.block1type=block1type;
+    this.block2type=block2type;
+  }
+  blockhere(){
+
+
+  }
+  freeze(){
+    if (this.gridData[this.block1y-1][this.block1x]>0){
+      this.gridData[this.block1y][this.block1x]=this.block1type;
+    }
+    if (this.gridData[this.block2y-1][this.block2x]>0){
+      this.gridData[this.block1y][this.block1x]=this.block1type;
     }
   }
-  pop()
+
 }
