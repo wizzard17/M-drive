@@ -2,7 +2,8 @@
 
 let images = [];
 let imageNames = ['white', 'red', 'green', 'yellow', 'blue'];
-let player1 
+let player1
+let futureblocks=[1,2,3,1,2,1,3,1,2,1,2,3,1,3,1,2,3,1,2,1,1,3,3,1,2,1,2,1,2,1,2,2,1,3,1,3,2,1,3] 
 function preload() {
   // Load each image and store it in the images array
   for (let i = 0; i < imageNames.length; i++) {
@@ -36,15 +37,15 @@ class DrawGrid {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0]
+      [0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 1, 0, 0]
     ];
     this.rectWidth = rectWidth;
     this.rectHeight = rectHeight;
     this.gridX = width / 2 - (this.gridData[0].length * 25);
     this.gridY = height / 2 - (this.gridData.length * 25);
 
-    this.dropper= new Drop(this.gridData,this.gridX,this.gridY ,1,2)
+    this.dropper= new Drop(this.gridData,5,0 ,1,2)
 
   }
 
@@ -70,9 +71,10 @@ class DrawGrid {
     pop();
   }
   control(){
+    this.dropper.display(this.gridX,this.gridY)
     this.dropper.freeze()
     this.dropper.move()
-    this.dropper.display()
+    
 
 
 
@@ -94,23 +96,22 @@ class Drop{
     this.block2x=3;
     this.block1y=0;
     this.block2y=-1;
-    this.gridData=gridData;
+    
     this.block1type=block1type;
     this.block2type=block2type;
     this.timer=50
-    this.x=x
-    this.y=y
   }
   blockhere(){
 
 
   }
   freeze(){
-    if (this.gridData[this.block1y+1][this.block1x]>0||this.block1y===12){
-      this.gridData[this.block1y][this.block1x]=this.block1type;
+    console.log(player1.gridData[this.block1y+1][this.block1x])
+    if (player1.gridData[this.block1y+1][this.block1x]>0||this.block1y===12){
+      player1.gridData[this.block1y][this.block1x]=this.block1type;
     }
-    if (this.gridData[this.block2y+1][this.block2x]>0||this.block2y===12){
-      this.gridData[this.block1y][this.block1x]=this.block1type;
+    if (player1.gridData[this.block2y+1][this.block2x]>0||this.block2y===12){
+      player1.gridData[this.block1y][this.block1x]=this.block1type;
     }
   }
   move(){
@@ -118,25 +119,20 @@ class Drop{
     if(this.timer===0){
       this.block1y+=1
       this.block2y+=1
-      this.timer=5
+      this.timer=50
     }
   }
-  display(){
-    let numRows = this.gridData.length;
-    let numCols = this.gridData[0].length;
-    for (let y = 0; y < numRows; y++) {
-      for (let x = 0; x < numCols; x++) {
-        if (this.block1y===y||this.block2y===y){
-        let imgIndex = this.block1type;
+  display(x,y){
+    push()
+    translate(x,y)
+    let numRows = player1.gridData.length;
+    let numCols = player1.gridData[0].length;
         // Check if the image index is within bounds of the images array
-        if (imgIndex >= 0 && imgIndex < images.length) {
-          image(images[imgIndex], this.block1x * this.rectWidth, (this.block1y -1* this.rectHeight) (y/this.timer), this.rectWidth, this.rectHeight);
-        } else {
-          console.error(`Image index ${imgIndex} out of bounds at grid position (${y}, ${x})`);
-        }
-      }
-      }
-    }
-  }
 
+    image(images[this.block1type],this.block1x * player1.rectWidth, (this.block1y* player1.rectHeight)-player1.rectHeight/this.timer, player1.rectWidth, player1.rectHeight);
+    image(images[this.block2type],this.block2x * player1.rectWidth, (this.block2y* player1.rectHeight)-, player1.rectWidth, player1.rectHeight);
+
+    //rect(this.block1x * player1.rectWidth, this.block1y*player1.rectHeight, player1.rectWidth, player1.rectHeight)
+    pop()
+  }
 }
