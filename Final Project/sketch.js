@@ -71,10 +71,16 @@ class DrawGrid {
     pop();
   }
   control(){
+    this.dropper.freeze()
+
+    if(this.dropper.delete===true){
+      this.dropper= new Drop(this.gridData,5,0 ,1,2)
+    }
     this.dropper.display(this.gridX,this.gridY)
     this.dropper.freeze()
     this.dropper.move()
-    
+    this.dropper.freeze()
+
 
 
 
@@ -100,18 +106,20 @@ class Drop{
     this.block1type=block1type;
     this.block2type=block2type;
     this.timer=50
+    this.delete=false
+    this.pos=1
   }
   blockhere(){
 
 
   }
   freeze(){
-    console.log(player1.gridData[this.block1y+1][this.block1x])
-    if (player1.gridData[this.block1y+1][this.block1x]>0||this.block1y===12){
+    if (player1.gridData[this.block1y+1][this.block1x]>0||this.block1y===12&&this.timer===0){
       player1.gridData[this.block1y][this.block1x]=this.block1type;
     }
-    if (player1.gridData[this.block2y+1][this.block2x]>0||this.block2y===12){
+    if (player1.gridData[this.block2y+1][this.block2x]>0||this.block2y===12&&this.timer===0){
       player1.gridData[this.block2y][this.block2x]=this.block2type;
+      this.delete=true
     }
   }
   move(){
@@ -122,37 +130,84 @@ class Drop{
       this.timer=50
     }
   }
-  sidemove(){
-    if (player1.gridData[this.block1y][this.block1x-1]=0||this.block1y===12){
-      if (player1.gridData[this.block2y][this.block2x-1]=0||this.block2y===12){
+  sidemoveleft(){
+    if (player1.gridData[this.block1y][this.block1x-1]===0&&this.block1x>0){
+      if (player1.gridData[this.block2y][this.block2x-1]===0&&this.block2x>0){
         this.block1x-=1
         this.block2x-=1
+        
       }
     }
-    if (player1.gridData[this.block2y+1][this.block2x]>0||this.block2y===12){
+  }
+  sidemoveright(){
+    if (player1.gridData[this.block1y][this.block1x+1]===0&&this.block1x<5){
+      if (player1.gridData[this.block2y][this.block2x+1]===0&&this.block2x<5){
+        this.block1x+=1
+        this.block2x+=1
+        
+      }
     }
-
-
-
   }
 
 
   display(x,y){
+    console.log(this.block1x)
     push()
     translate(x,y)
     let numRows = player1.gridData.length;
     let numCols = player1.gridData[0].length;
         // Check if the image index is within bounds of the images array
 
-    image(images[this.block1type],this.block1x * player1.rectWidth, this.block1y* player1.rectHeight+player1.rectHeight*(50-this.timer)/50, player1.rectWidth, player1.rectHeight);
-    image(images[this.block2type],this.block2x * player1.rectWidth, (this.block2y* player1.rectHeight)+player1.rectHeight*(50-this.timer)/50, player1.rectWidth, player1.rectHeight);
+    image(images[this.block1type],this.block1x * player1.rectWidth, ((this.block1y+1)* player1.rectHeight)-player1.rectHeight*(this.timer)/50, player1.rectWidth, player1.rectHeight);
+    image(images[this.block2type],this.block2x * player1.rectWidth, ((this.block2y+1)* player1.rectHeight)-player1.rectHeight*(this.timer)/50, player1.rectWidth, player1.rectHeight);
 
     //rect(this.block1x * player1.rectWidth, this.block1y*player1.rectHeight, player1.rectWidth, player1.rectHeight)
     pop()
+    
   }
+  swapPos(){
+    this.pos+=1
+    if(this.pos>4){
+      this.pos=1
+    }
+    if(this.pos===1){
+      this.block2x=this.block1x
+      this.block2y=this.block1y+1
+
+    }
+    if(this.pos===2){
+      this.block2x=this.block1x+1
+      this.block2y=this.block1y
+
+    }
+    if(this.pos===3){
+      this.block2x=this.block1x
+      this.block2y=this.block1y-1
+
+    }
+    if(this.pos===4){
+      this.block2x=this.block1x-1
+      this.block2y=this.block1y
+
+    }
+
+
+
+
+  }
+
+
+
+
 }
 function keyReleased() {
   if (keyCode === LEFT_ARROW) {
-    player1.dropper.sidemove();
+    player1.dropper.sidemoveleft();
+  }
+  if (keyCode === RIGHT_ARROW) {
+    player1.dropper.sidemoveright();
+  }
+  if (keyCode === 88) {
+    player1.dropper.swapPos()
   }
 }
