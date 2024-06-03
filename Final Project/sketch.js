@@ -21,6 +21,8 @@ function draw() {
   background(220);
   player1.drawGrid()
   player1.control()
+  player1.falling()
+  //player1.falling()
 }
 
 class DrawGrid {
@@ -28,7 +30,7 @@ class DrawGrid {
     this.gridData = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
@@ -89,7 +91,29 @@ class DrawGrid {
 
 
   }
+  lose(){
+    if(this.gridData[0,3]>0){
+      console.log('you lose')
+    }
+  }
+  falling(){
+    let numRows = this.gridData.length;
+    let numCols = this.gridData[0].length;
+    for (let y = 12; y > 0; y--) {
+      for (let x = 12; x >0;  x--) {
+        if(this.gridData[y][x]>0&&this.gridData[y+1][x]===0){
+          if(y<11){
+            this.gridData[y+1][x]===this.gridData[y][x]
+            this.gridData[y][x]=0
+          }
+          
+          
+          
+        }
 
+      }
+    }
+  }
   
 
 
@@ -107,19 +131,30 @@ class Drop{
     this.block2type=block2type;
     this.timer=50
     this.delete=false
-    this.pos=1
+    this.pos=3
   }
   blockhere(){
 
 
   }
-  freeze(){
-    if (player1.gridData[this.block1y+1][this.block1x]>0||this.block1y===12&&this.timer===0){
-      player1.gridData[this.block1y][this.block1x]=this.block1type;
+  freeze() {
+    // Check if block1 should freeze
+    if (this.block1y === 12 || (this.block1y < 12 && player1.gridData[this.block1y + 1][this.block1x] > 0)||(this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0))) {
+      player1.gridData[this.block1y][this.block1x] = this.block1type;
+      player1.gridData[this.block2y][this.block2x] = this.block2type;
+      this.delete = true;
     }
-    if (player1.gridData[this.block2y+1][this.block2x]>0||this.block2y===12&&this.timer===0){
-      player1.gridData[this.block2y][this.block2x]=this.block2type;
-      this.delete=true
+    /*
+    // Check if block2 should freeze
+    if (this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0)) {
+      player1.gridData[this.block2y][this.block2x] = this.block2type;
+      this.delete = true;
+    }
+    */
+    // If both blocks are frozen, mark as delete
+    if ((this.block1y === 12 || player1.gridData[this.block1y + 1][this.block1x] > 0) &&
+        (this.block2y === 12 || player1.gridData[this.block2y + 1][this.block2x] > 0)) {
+      
     }
   }
   move(){
