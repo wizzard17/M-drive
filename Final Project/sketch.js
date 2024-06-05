@@ -22,7 +22,6 @@ function draw() {
   player1.drawGrid()
   player1.control()
   player1.falling()
-  //player1.falling()
 }
 
 class DrawGrid {
@@ -99,11 +98,12 @@ class DrawGrid {
   falling(){
     let numRows = this.gridData.length;
     let numCols = this.gridData[0].length;
-    for (let y = 12; y > 0; y--) {
-      for (let x = 12; x >0;  x--) {
-        if(this.gridData[y][x]>0&&this.gridData[y+1][x]===0){
-          if(y<11){
-            this.gridData[y+1][x]===this.gridData[y][x]
+    for (let y = 12; y >=0; y--) {
+      for (let x = 12; x >=0;  x--) {
+        if(y<12){  
+          if(this.gridData[y][x]!==0&&this.gridData[y+1][x]===0){
+          
+            this.gridData[y+1][x]=this.gridData[y][x]
             this.gridData[y][x]=0
           }
           
@@ -114,7 +114,6 @@ class DrawGrid {
       }
     }
   }
-  
 
 
 
