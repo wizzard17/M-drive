@@ -4,6 +4,7 @@ let images = [];
 let imageNames = ['white', 'red', 'green', 'yellow', 'blue'];
 let player1
 let futureblocks=[1,2,3,1,2,1,3,1,2,1,2,3,1,3,1,2,3,1,2,1,1,3,3,1,2,1,2,1,2,1,2,2,1,3,1,3,2,1,3] 
+let blockstypelist=[]
 function preload() {
   // Load each image and store it in the images array
   for (let i = 0; i < imageNames.length; i++) {
@@ -14,6 +15,9 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   player1 =new DrawGrid(50, 50);
+  for(let x = 1000; x>0; x--){
+    blockstypelist.push(round(random(1,4)))
+  }
 
 }
 
@@ -29,7 +33,6 @@ class DrawGrid {
     this.gridData = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
@@ -38,15 +41,17 @@ class DrawGrid {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 0],
-      [0, 0, 0, 1, 0, 0]
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0]
     ];
+    
     this.rectWidth = rectWidth;
     this.rectHeight = rectHeight;
     this.gridX = width / 2 - (this.gridData[0].length * 25);
     this.gridY = height / 2 - (this.gridData.length * 25);
-
-    this.dropper= new Drop(this.gridData,5,0 ,1,2)
+    this.blockNumber=0
+    this.dropper= new Drop(this.gridData,5,0 ,2,2)
 
   }
 
@@ -75,12 +80,12 @@ class DrawGrid {
     this.dropper.freeze()
 
     if(this.dropper.delete===true){
-      this.dropper= new Drop(this.gridData,5,0 ,1,2)
+      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1])
+      this.blockNumber+=2
     }
     this.dropper.display(this.gridX,this.gridY)
     this.dropper.freeze()
     this.dropper.move()
-    this.dropper.freeze()
 
 
 
