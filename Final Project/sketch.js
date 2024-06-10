@@ -3,7 +3,8 @@
 let images = [];
 let imageNames = ['white', 'red', 'green', 'yellow', 'blue'];
 let player1
-let futureblocks=[1,2,3,1,2,1,3,1,2,1,2,3,1,3,1,2,3,1,2,1,1,3,3,1,2,1,2,1,2,1,2,2,1,3,1,3,2,1,3] 
+let player2
+let futureblocks=[]
 let blockstypelist=[]
 function preload() {
   // Load each image and store it in the images array
@@ -14,7 +15,8 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  player1 =new DrawGrid(50, 50);
+  player1 =new DrawGrid(50, 50,0,0);
+  player2 =new DrawGrid(50, 50,width-50*6,0);
   for(let x = 1000; x>0; x--){
     blockstypelist.push(round(random(1,4)))
   }
@@ -26,6 +28,9 @@ function draw() {
   player1.drawGrid()
   player1.control()
   player1.falling()
+  player2.drawGrid()
+  player2.control()
+  player2.falling()
 }
 
 class DrawGrid {
@@ -44,14 +49,18 @@ class DrawGrid {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0]
+
+
+
+
     ];
     
     this.rectWidth = rectWidth;
     this.rectHeight = rectHeight;
-    this.gridX = width / 2 - (this.gridData[0].length * 25);
-    this.gridY = height / 2 - (this.gridData.length * 25);
+    this.gridX = gridX
+    this.gridY = gridY
     this.blockNumber=0
-    this.dropper= new Drop(this.gridData,5,0 ,2,2)
+    this.dropper = new Drop(this.gridData,5,0 ,2,2,this)
 
   }
 
@@ -80,7 +89,7 @@ class DrawGrid {
     this.dropper.freeze()
 
     if(this.dropper.delete===true){
-      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1])
+      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
       this.blockNumber+=2
     }
     this.dropper.display(this.gridX,this.gridY)
@@ -125,17 +134,19 @@ class DrawGrid {
 
 }
 class Drop{
-  constructor(gridData,x,y,block1type,block2type){
+  constructor(gridData,x,y,block1type,block2type,rectHeight,rectWidth){
     this.block1x=3;
     this.block2x=3;
     this.block1y=0;
     this.block2y=-1;
-    
+    this.gridData=gridData
     this.block1type=block1type;
     this.block2type=block2type;
     this.timer=50
     this.delete=false
     this.pos=3
+    this.rectHeight= rectHeight
+    this.rectWidth= rectWidth
   }
   blockhere(){
 
@@ -143,9 +154,9 @@ class Drop{
   }
   freeze() {
     // Check if block1 should freeze
-    if (this.block1y === 12 || (this.block1y < 12 && player1.gridData[this.block1y + 1][this.block1x] > 0)||(this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0))) {
-      player1.gridData[this.block1y][this.block1x] = this.block1type;
-      player1.gridData[this.block2y][this.block2x] = this.block2type;
+    if (this.block1y === 12 || (this.block1y < 12 && this.gridData[this.block1y + 1][this.block1x] > 0)||(this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0))) {
+      this.gridData[this.block1y][this.block1x] = this.block1type;
+      this.gridData[this.block2y][this.block2x] = this.block2type;
       this.delete = true;
     }
     /*
@@ -156,8 +167,8 @@ class Drop{
     }
     */
     // If both blocks are frozen, mark as delete
-    if ((this.block1y === 12 || player1.gridData[this.block1y + 1][this.block1x] > 0) &&
-        (this.block2y === 12 || player1.gridData[this.block2y + 1][this.block2x] > 0)) {
+    if ((this.block1y === 12 || this.gridData[this.block1y + 1][this.block1x] > 0) &&
+        (this.block2y === 12 || this.gridData[this.block2y + 1][this.block2x] > 0)) {
       
     }
   }
@@ -170,8 +181,8 @@ class Drop{
     }
   }
   sidemoveleft(){
-    if (player1.gridData[this.block1y][this.block1x-1]===0&&this.block1x>0){
-      if (player1.gridData[this.block2y][this.block2x-1]===0&&this.block2x>0){
+    if (this.gridData[this.block1y][this.block1x-1]===0&&this.block1x>0){
+      if (this.gridData[this.block2y][this.block2x-1]===0&&this.block2x>0){
         this.block1x-=1
         this.block2x-=1
         
@@ -179,8 +190,8 @@ class Drop{
     }
   }
   sidemoveright(){
-    if (player1.gridData[this.block1y][this.block1x+1]===0&&this.block1x<5){
-      if (player1.gridData[this.block2y][this.block2x+1]===0&&this.block2x<5){
+    if (this.gridData[this.block1y][this.block1x+1]===0&&this.block1x<5){
+      if (this.gridData[this.block2y][this.block2x+1]===0&&this.block2x<5){
         this.block1x+=1
         this.block2x+=1
         
@@ -193,12 +204,11 @@ class Drop{
     console.log(this.block1x)
     push()
     translate(x,y)
-    let numRows = player1.gridData.length;
-    let numCols = player1.gridData[0].length;
+   
         // Check if the image index is within bounds of the images array
 
-    image(images[this.block1type],this.block1x * player1.rectWidth, ((this.block1y+1)* player1.rectHeight)-player1.rectHeight*(this.timer)/50, player1.rectWidth, player1.rectHeight);
-    image(images[this.block2type],this.block2x * player1.rectWidth, ((this.block2y+1)* player1.rectHeight)-player1.rectHeight*(this.timer)/50, player1.rectWidth, player1.rectHeight);
+    image(images[this.block1type],this.block1x * this.rectWidth, ((this.block1y+1)* this.rectHeight)-this.rectHeight*(this.timer)/50, this.rectWidth, this.rectHeight);
+    image(images[this.block2type],this.block2x * this.rectWidth, ((this.block2y+1)* this.rectHeight)-this.rectHeight*(this.timer)/50, this.rectWidth, this.rectHeight);
 
     //rect(this.block1x * player1.rectWidth, this.block1y*player1.rectHeight, player1.rectWidth, player1.rectHeight)
     pop()
