@@ -1,7 +1,15 @@
 
 
 let images = [];
-let imageNames = ['white', 'red', 'green', 'yellow', 'blue'];
+let imageNames = ['white', 'red', 'green', 'yellow', 'blue','red_orb','green_orb','yellow_orb','blue_orb'];
+//white 0
+//red 5 ,popper 10, countdown block from 11 -15
+//green 6, popper20,countdown block from 21 -25
+//yellow 7, popper 30,countdown block from 31 -35
+//blue 8, popper 40,countdown block from 41 -45
+
+
+let listofblocks=[1,2,3,4,5,6,7,8,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ]
 let player1
 let player2
 let futureblocks=[]
@@ -15,11 +23,12 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  for(let x = 1000; x>0; x--){
+    blockstypelist.push(random(listofblocks))
+  }
   player1 =new DrawGrid(50, 50,0,0);
   player2 =new DrawGrid(50, 50,width-50*6,0);
-  for(let x = 1000; x>0; x--){
-    blockstypelist.push(round(random(1,4)))
-  }
+  
 
 }
 
@@ -34,7 +43,7 @@ function draw() {
 }
 
 class DrawGrid {
-  constructor(rectWidth, rectHeight, gridX, gridY) {
+  constructor(rectWidth, rectHeight, gridX, gridY,nextblock) {
     this.gridData = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
@@ -60,7 +69,7 @@ class DrawGrid {
     this.gridX = gridX
     this.gridY = gridY
     this.blockNumber=0
-    this.dropper = new Drop(this.gridData,5,0 ,2,2,this)
+    this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
 
   }
 
@@ -89,20 +98,13 @@ class DrawGrid {
     this.dropper.freeze()
 
     if(this.dropper.delete===true){
-      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
       this.blockNumber+=2
+      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
+      
     }
     this.dropper.display(this.gridX,this.gridY)
     this.dropper.freeze()
     this.dropper.move()
-
-
-
-
-
-
-
-
   }
   lose(){
     if(this.gridData[0,3]>0){
@@ -115,20 +117,40 @@ class DrawGrid {
     for (let y = 12; y >=0; y--) {
       for (let x = 12; x >=0;  x--) {
         if(y<12){  
-          if(this.gridData[y][x]!==0&&this.gridData[y+1][x]===0){
-          
+          if(this.gridData[y][x]!==0&&this.gridData[y+1][x]===0){ 
             this.gridData[y+1][x]=this.gridData[y][x]
             this.gridData[y][x]=0
           }
-          
-          
-          
         }
-
       }
     }
-  }
+    
 
+
+
+
+
+
+
+  }
+  break(){
+    for (let y = 12; y >=0; y--) {
+      for (let x = 12; x >=0;  x--) {
+    if(this.gridData[y][x]===6){//red
+      
+    }
+    if(this.gridData[y][x]===7){//green
+      
+    }
+    if(this.gridData[y][x]===8){//yellow
+      
+    }
+    if(this.gridData[y][x]===9){//blue
+      
+    }
+  }
+    }
+  }
 
 
 
