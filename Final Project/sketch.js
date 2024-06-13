@@ -272,13 +272,25 @@ class Drop{
 
 }
 function keyReleased() {
+  // Player 1 controls
   if (keyCode === LEFT_ARROW) {
     player1.dropper.sidemoveleft();
   }
   if (keyCode === RIGHT_ARROW) {
     player1.dropper.sidemoveright();
   }
-  if (keyCode === 88) {
-    player1.dropper.swapPos()
+  if (key === 'l' || key === 'L') { // 'X' key for rotating
+    player1.dropper.swapPos();
+  }
+
+  // Player 2 controls
+  if (key === 'a' || key === 'A') { // 'A' key for moving left
+    player2.dropper.sidemoveleft();
+  }
+  if (key === 'd' || key === 'D') { // 'D' key for moving right
+    player2.dropper.sidemoveright();
+  }
+  if (keyCode === 88) { // 'L' key for rotating
+    player2.dropper.swapPos();
   }
 }
