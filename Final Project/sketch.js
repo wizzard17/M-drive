@@ -1,21 +1,22 @@
-
+// Final Project
+// Rurik Lung
+// 6/23/2024
 
 let images = [];
-let imageNames = ['white', 'red', 'green', 'yellow', 'blue','red_orb','green_orb','yellow_orb','blue_orb'];
-//white 0
-//red 5 ,popper 10, countdown block from 11 -15
-//green 6, popper20,countdown block from 21 -25
-//yellow 7, popper 30,countdown block from 31 -35
-//blue 8, popper 40,countdown block from 41 -45
+let imageNames = ['white', 'red', 'green', 'yellow', 'blue', 'red_orb', 'green_orb', 'yellow_orb', 'blue_orb'];
+// white 0
+// red 1 ,orb 5
+// green 2, orb 6,
+// yellow 3, orb 7
+// blue 4 orb 
 
+let listofblocks = [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4];
+let player1;
+let player2;
+let blockstypelist = [];
 
-let listofblocks=[1,2,3,4,5,6,7,8,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ]
-let player1
-let player2
-let futureblocks=[]
-let blockstypelist=[]
 function preload() {
-  // Load each image and store it in the images array
+  // Load each image and store it in an array
   for (let i = 0; i < imageNames.length; i++) {
     images[i] = loadImage('assets/' + imageNames[i] + '.png');
   }
@@ -23,27 +24,43 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  for(let x = 1000; x>0; x--){
-    blockstypelist.push(random(listofblocks))
+  // creates random list of blocks to be used
+  for (let x = 1000; x > 0; x--) {
+    blockstypelist.push(random(listofblocks));
   }
-  player1 =new DrawGrid(50, 50,0,0);
-  player2 =new DrawGrid(50, 50,width-50*6,0);
-  
-
+  // creates classes
+  player1 = new DrawGrid(50, 50, 0, 0);
+  player2 = new DrawGrid(50, 50, width - 50 * 6, 0);
 }
 
 function draw() {
   background(220);
-  player1.drawGrid()
-  player1.control()
-  player1.falling()
-  player2.drawGrid()
-  player2.control()
-  player2.falling()
+  // goes through functions and checks if anyone's lost
+  if (player1.loss === false && player2.loss === false) {
+    player1.drawGrid();
+    player1.control();
+    player1.falling();
+    player1.break();
+    player1.lose();
+
+    player2.drawGrid();
+    player2.control();
+    player2.falling();
+    player2.break();
+    player2.lose();
+  }
+  if (player1.loss === true) {
+    background(220);
+    text("Player1 loses!", width / 2, height / 2);
+  } else if (player2.loss === true) {
+    background(220);
+    text("Player2 loses!", width / 2, height / 2);
+  }
 }
 
 class DrawGrid {
-  constructor(rectWidth, rectHeight, gridX, gridY,nextblock) {
+  constructor(rectWidth, rectHeight, gridX, gridY, nextblock) {
+    // grid for the game board
     this.gridData = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
@@ -58,31 +75,28 @@ class DrawGrid {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0]
-
-
-
-
     ];
-    
+    this.loss = false;
     this.rectWidth = rectWidth;
     this.rectHeight = rectHeight;
-    this.gridX = gridX
-    this.gridY = gridY
-    this.blockNumber=0
-    this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
-
+    this.gridX = gridX;
+    this.gridY = gridY;
+    this.blockNumber = 0; // keeps track of what block the player is on in the list
+    // stores the class for the blocks that fall down the screen
+    this.dropper = new Drop(this.gridData, 5, 0, blockstypelist[this.blockNumber], blockstypelist[this.blockNumber + 1], this.rectHeight, this.rectWidth);
   }
 
   drawGrid() {
+    // draws the grid
     push();
     translate(this.gridX, this.gridY);
     let numRows = this.gridData.length;
     let numCols = this.gridData[0].length;
-    
+
     for (let y = 0; y < numRows; y++) {
       for (let x = 0; x < numCols; x++) {
         let imgIndex = this.gridData[y][x];
-        
+
         // Check if the image index is within bounds of the images array
         if (imgIndex >= 0 && imgIndex < images.length) {
           image(images[imgIndex], x * this.rectWidth, y * this.rectHeight, this.rectWidth, this.rectHeight);
@@ -91,174 +105,198 @@ class DrawGrid {
         }
       }
     }
-    
+
     pop();
   }
-  control(){
-    this.dropper.freeze()
 
-    if(this.dropper.delete===true){
-      this.blockNumber+=2
-      this.dropper= new Drop(this.gridData,5,0 ,blockstypelist[this.blockNumber],blockstypelist[this.blockNumber+1],this.rectHeight,this.rectWidth)
-      
+  control() {
+    // runs the dropper class with deleting it every time the blocks have been placed
+    if (this.loss === false) {
+      if (this.dropper.delete === true) {
+        this.blockNumber += 2;
+        this.lose();
+        if (this.loss === false) {
+          this.dropper = new Drop(this.gridData, 5, 0, blockstypelist[this.blockNumber], blockstypelist[this.blockNumber + 1], this.rectHeight, this.rectWidth);
+        }
+      }
+      this.dropper.display(this.gridX, this.gridY);
+      this.dropper.freeze();
+      this.dropper.move();
     }
-    this.dropper.display(this.gridX,this.gridY)
-    this.dropper.freeze()
-    this.dropper.move()
   }
-  lose(){
-    if(this.gridData[0,3]>0){
-      console.log('you lose')
+
+  lose() {
+    // checks if the player lost
+    if (this.gridData[0][3] > 0 && this.gridData[1][3] > 0) {
+      this.loss = true;
     }
   }
-  falling(){
+
+  falling() {
+    // logic for the blocks being affected by gravity basically just checks if there are blocks underneath and moves it down if there aren't
     let numRows = this.gridData.length;
     let numCols = this.gridData[0].length;
-    for (let y = 12; y >=0; y--) {
-      for (let x = 12; x >=0;  x--) {
-        if(y<12){  
-          if(this.gridData[y][x]!==0&&this.gridData[y+1][x]===0){ 
-            this.gridData[y+1][x]=this.gridData[y][x]
-            this.gridData[y][x]=0
+    for (let y = 12; y >= 0; y--) {
+      for (let x = 12; x >= 0; x--) {
+        if (y < 12) {
+          if (this.gridData[y][x] !== 0 && this.gridData[y + 1][x] === 0) {
+            this.gridData[y + 1][x] = this.gridData[y][x];
+            this.gridData[y][x] = 0;
           }
         }
       }
     }
-    
-
-
-
-
-
-
-
-  }
-  break(){
-    for (let y = 12; y >=0; y--) {
-      for (let x = 12; x >=0;  x--) {
-    if(this.gridData[y][x]===6){//red
-      
-    }
-    if(this.gridData[y][x]===7){//green
-      
-    }
-    if(this.gridData[y][x]===8){//yellow
-      
-    }
-    if(this.gridData[y][x]===9){//blue
-      
-    }
-  }
-    }
   }
 
-
-
+  break() {
+    // breaks any block that is touching an orb when it pops
+    let orbtype;
+    let numRows = this.gridData.length;
+    let numCols = this.gridData[0].length;
+    for (let y = 0; y < numRows; y++) {
+      for (let x = 0; x < numCols; x++) {
+        if (this.gridData[y][x] > 4) {
+          if (this.gridData[y][x] === 5) {
+            orbtype = 1;
+            this.gridData[y][x] = 0;
+          }
+          if (this.gridData[y][x] === 6) {
+            orbtype = 2;
+            this.gridData[y][x] = 0;
+          }
+          if (this.gridData[y][x] === 7) {
+            orbtype = 3;
+            this.gridData[y][x] = 0;
+          }
+          if (this.gridData[y][x] === 8) {
+            orbtype = 4;
+            this.gridData[y][x] = 0;
+          }
+          if (x + 1 < numCols && this.gridData[y][x + 1] === orbtype) {
+            this.gridData[y][x + 1] = 0;
+          }
+          if (x - 1 >= 0 && this.gridData[y][x - 1] === orbtype) {
+            this.gridData[y][x - 1] = 0;
+          }
+          if (y + 1 < numRows && this.gridData[y + 1][x] === orbtype) {
+            this.gridData[y + 1][x] = 0;
+          }
+          if (y - 1 >= 0 && this.gridData[y - 1][x] === orbtype) {
+            this.gridData[y - 1][x] = 0;
+          }
+        }
+      }
+    }
+  }
 }
-class Drop{
-  constructor(gridData,x,y,block1type,block2type,rectHeight,rectWidth){
-    this.block1x=3;
-    this.block2x=3;
-    this.block1y=0;
-    this.block2y=-1;
-    this.gridData=gridData
-    this.block1type=block1type;
-    this.block2type=block2type;
-    this.timer=50
-    this.delete=false
-    this.pos=3
-    this.rectHeight= rectHeight
-    this.rectWidth= rectWidth
-  }
-  blockhere(){
 
-
+class Drop {
+  constructor(gridData, x, y, block1type, block2type, rectHeight, rectWidth) {
+    // controls blocks x and y positions
+    this.block1x = 3;
+    this.block2x = 3;
+    this.block1y = 0;
+    this.block2y = -1;
+    // access to grid data/game board
+    this.gridData = gridData;
+    // tells it what blocks to use
+    this.block1type = block1type;
+    this.block2type = block2type;
+    // timer for how long it takes the block to fall one by one
+    this.timer = 50;
+    // if the block has been placed it will delete it
+    this.delete = false;
+    //position of the block it has 4 so when the block orbits around it uses 1 to 4 to keep track
+    this.pos = 3
+    //just keeps track of size
+    this.rectHeight = rectHeight
+    this.rectWidth = rectWidth
   }
+
   freeze() {
-    // Check if block1 should freeze
-    if (this.block1y === 12 || (this.block1y < 12 && this.gridData[this.block1y + 1][this.block1x] > 0)||(this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0))) {
-      this.gridData[this.block1y][this.block1x] = this.block1type;
-      this.gridData[this.block2y][this.block2x] = this.block2type;
-      this.delete = true;
-    }
-    /*
-    // Check if block2 should freeze
-    if (this.block2y === 12 || (this.block2y < 12 && player1.gridData[this.block2y + 1][this.block2x] > 0)) {
-      player1.gridData[this.block2y][this.block2x] = this.block2type;
-      this.delete = true;
-    }
-    */
-    // If both blocks are frozen, mark as delete
-    if ((this.block1y === 12 || this.gridData[this.block1y + 1][this.block1x] > 0) &&
-        (this.block2y === 12 || this.gridData[this.block2y + 1][this.block2x] > 0)) {
-      
-    }
-  }
-  move(){
-    this.timer-=1
-    if(this.timer===0){
-      this.block1y+=1
-      this.block2y+=1
-      this.timer=50
-    }
-  }
-  sidemoveleft(){
-    if (this.gridData[this.block1y][this.block1x-1]===0&&this.block1x>0){
-      if (this.gridData[this.block2y][this.block2x-1]===0&&this.block2x>0){
-        this.block1x-=1
-        this.block2x-=1
-        
+    // Check if block1 or block2 should freeze and if anythings under it
+    if (this.gridData[0][3] === 0 && this.gridData[1][3] === 0) {
+      if (
+        this.block1y === 12 || this.gridData[this.block1y + 1][this.block1x] > 0 ||
+        this.block2y === 12 || this.gridData[this.block2y + 1][this.block2x] > 0
+      ) {
+
+        this.gridData[this.block1y][this.block1x] = this.block1type;
+        this.gridData[this.block2y][this.block2x] = this.block2type;
+        this.delete = true;
       }
     }
   }
-  sidemoveright(){
-    if (this.gridData[this.block1y][this.block1x+1]===0&&this.block1x<5){
-      if (this.gridData[this.block2y][this.block2x+1]===0&&this.block2x<5){
-        this.block1x+=1
-        this.block2x+=1
-        
+  move() {
+    //makes the block move down by 1 when the times hits 0
+    this.timer -= 1;
+    if (this.timer === 0) {
+      this.block1y += 1;
+      this.block2y += 1;
+      this.timer = 50;
+    }
+  }
+  //moves falling blocks left and right when called
+  sidemoveleft() {
+
+    if (this.gridData[this.block1y][this.block1x - 1] === 0 && this.block1x > 0) {
+      if (this.gridData[this.block2y][this.block2x - 1] === 0 && this.block2x > 0) {
+        this.block1x -= 1;
+        this.block2x -= 1;
+
+      }
+    }
+  }
+  sidemoveright() {
+    if (this.gridData[this.block1y][this.block1x + 1] === 0 && this.block1x < 5) {
+      if (this.gridData[this.block2y][this.block2x + 1] === 0 && this.block2x < 5) {
+        this.block1x += 1;
+        this.block2x += 1;
+
       }
     }
   }
 
 
-  display(x,y){
-    console.log(this.block1x)
-    push()
-    translate(x,y)
-   
-        // Check if the image index is within bounds of the images array
+  display(x, y) {
+    //displays it uses the timer and devids it to give it that smouth motion
+    console.log(this.block1x);
+    push();
+    translate(x, y);
 
-    image(images[this.block1type],this.block1x * this.rectWidth, ((this.block1y+1)* this.rectHeight)-this.rectHeight*(this.timer)/50, this.rectWidth, this.rectHeight);
-    image(images[this.block2type],this.block2x * this.rectWidth, ((this.block2y+1)* this.rectHeight)-this.rectHeight*(this.timer)/50, this.rectWidth, this.rectHeight);
+    // Check if the image index is within bounds of the images array
+
+    image(images[this.block1type], this.block1x * this.rectWidth, ((this.block1y + 1) * this.rectHeight) - this.rectHeight * (this.timer) / 50, this.rectWidth, this.rectHeight);
+    image(images[this.block2type], this.block2x * this.rectWidth, ((this.block2y + 1) * this.rectHeight) - this.rectHeight * (this.timer) / 50, this.rectWidth, this.rectHeight);
 
     //rect(this.block1x * player1.rectWidth, this.block1y*player1.rectHeight, player1.rectWidth, player1.rectHeight)
-    pop()
-    
+    pop();
+
   }
-  swapPos(){
-    this.pos+=1
-    if(this.pos>4){
-      this.pos=1
+  //controls where the block is around the mian one incharge of the rotaton
+  swapPos() {
+    this.pos += 1
+    if (this.pos > 4) {
+      this.pos = 1;
     }
-    if(this.pos===1){
-      this.block2x=this.block1x
-      this.block2y=this.block1y+1
+    if (this.pos === 1) {
+      this.block2x = this.block1x;
+      this.block2y = this.block1y + 1;
 
     }
-    if(this.pos===2){
-      this.block2x=this.block1x+1
-      this.block2y=this.block1y
+    if (this.pos === 2) {
+      this.block2x = this.block1x + 1;
+      this.block2y = this.block1y;
 
     }
-    if(this.pos===3){
-      this.block2x=this.block1x
-      this.block2y=this.block1y-1
+    if (this.pos === 3) {
+      this.block2x = this.block1x;
+      this.block2y = this.block1y - 1;
 
     }
-    if(this.pos===4){
-      this.block2x=this.block1x-1
-      this.block2y=this.block1y
+    if (this.pos === 4) {
+      this.block2x = this.block1x - 1;
+      this.block2y = this.block1y;
 
     }
 
